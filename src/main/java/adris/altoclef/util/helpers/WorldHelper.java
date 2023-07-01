@@ -18,8 +18,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.*;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -53,10 +53,10 @@ public interface WorldHelper {
     }
 
     static Vec3i toVec3i(Vec3d pos) {
-        return new Vec3i(pos.getX(), pos.getY(), pos.getZ());
+        return new Vec3i((int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
     }
     static BlockPos toBlockPos(Vec3d pos) {
-        return new BlockPos(pos.getX(), pos.getY(), pos.getZ());
+        return new BlockPos((int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
     }
 
     static boolean isSourceBlock(AltoClef mod, BlockPos pos, boolean onlyAcceptStill) {
@@ -99,8 +99,8 @@ public interface WorldHelper {
     static Dimension getCurrentDimension() {
         ClientWorld world = MinecraftClient.getInstance().world;
         if (world == null) return Dimension.OVERWORLD;
-        if (world.getDimension().isUltrawarm()) return Dimension.NETHER;
-        if (world.getDimension().isNatural()) return Dimension.OVERWORLD;
+        if (world.getDimension().ultrawarm()) return Dimension.NETHER;
+        if (world.getDimension().natural()) return Dimension.OVERWORLD;
         return Dimension.END;
     }
 
@@ -302,8 +302,8 @@ public interface WorldHelper {
     }
     
     static Iterable<BlockPos> getBlocksTouchingBox(AltoClef mod, Box box) {
-        BlockPos min = new BlockPos(box.minX, box.minY, box.minZ);
-        BlockPos max = new BlockPos(box.maxX, box.maxY, box.maxZ);
+        BlockPos min = new BlockPos((int) box.minX, (int) box.minY, (int) box.minZ);
+        BlockPos max = new BlockPos((int) box.maxX, (int) box.maxY, (int) box.maxZ);
         return scanRegion(mod, min, max);
     }
 
@@ -356,7 +356,8 @@ public interface WorldHelper {
         if (state.getBlock() instanceof SpawnerBlock) {
             BlockEntity be = mod.getWorld().getBlockEntity(pos);
             if (be instanceof MobSpawnerBlockEntity blockEntity) {
-                return blockEntity.getLogic().getRenderedEntity(mod.getWorld());
+                return blockEntity.getLogic().getRenderedEntity(mod.getWorld(),
+                        blockEntity.getWorld().getRandom(), blockEntity.getPos());
             }
         }
         return null;

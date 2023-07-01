@@ -12,7 +12,7 @@ import java.util.Optional;
 /**
  * Use this whenever you want to travel to a target position that may change.
  * <p>
- * https://www.notion.so/Closest-threshold-ing-system-utility-c3816b880402494ba9209c9f9b62b8bf
+ * <a href="https://www.notion.so/Closest-threshold-ing-system-utility-c3816b880402494ba9209c9f9b62b8bf">...</a>
  */
 public abstract class AbstractDoToClosestObjectTask<T> extends Task {
 

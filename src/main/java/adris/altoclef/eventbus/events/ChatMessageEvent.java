@@ -1,12 +1,13 @@
 package adris.altoclef.eventbus.events;
 
-import net.minecraft.network.MessageType;
+import net.minecraft.network.message.MessageType;
 import net.minecraft.text.Text;
 
 /**
  * Whenever chat appears
  */
 public class ChatMessageEvent {
+
     public MessageType messageType;
     public Text message;
 

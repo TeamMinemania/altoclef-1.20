@@ -9,6 +9,7 @@ import adris.altoclef.util.helpers.ItemHelper;
 import adris.altoclef.util.helpers.StorageHelper;
 import adris.altoclef.util.slots.CursorSlot;
 import adris.altoclef.util.slots.Slot;
+import net.minecraft.block.WearableCarvedPumpkinBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.*;
@@ -130,11 +131,12 @@ public class SlotHandler {
                             || item instanceof OnAStickItem
                             || item == Items.COMPASS
                             || item instanceof EmptyMapItem
-                            || item instanceof Wearable
+                            || item instanceof Equipment
                             || item == Items.SHIELD
                             || item == Items.LEAD;
                 }
         );
+
     }
 
     /**

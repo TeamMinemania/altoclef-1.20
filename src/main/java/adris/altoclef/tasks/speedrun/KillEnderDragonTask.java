@@ -297,7 +297,7 @@ public class KillEnderDragonTask extends Task {
                         Rotation targetRotation = RotationUtils.calcRotationFromVec3d(mod.getClientBaritone().getPlayerContext().playerHead(), targetLookPos, mod.getClientBaritone().getPlayerContext().playerRotations());
                         mod.getClientBaritone().getLookBehavior().updateTarget(targetRotation, true);
                         // Also look towards da dragon
-                        MinecraftClient.getInstance().options.autoJump = false;
+                        MinecraftClient.getInstance().options.getAutoJump().setValue(false);
                         mod.getClientBaritone().getInputOverrideHandler().setInputForceState(Input.MOVE_FORWARD, true);
                         hit(mod);
                     } else {

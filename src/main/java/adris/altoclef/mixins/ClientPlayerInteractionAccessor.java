@@ -9,7 +9,10 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(ClientPlayerInteractionManager.class)
 public interface ClientPlayerInteractionAccessor {
-    @Invoker("sendPlayerAction")
-    void doSendPlayerAction(PlayerActionC2SPacket.Action action, BlockPos pos, Direction direction);
+
+    //TODO: ???
+
+//    @Invoker("sendPlayerAction")
+//    void doSendPlayerAction(PlayerActionC2SPacket.Action action, BlockPos pos, Direction direction);
 
 }

@@ -415,6 +415,8 @@ public class Settings implements IFailableConfigFile {
      */
     private List<BlockRange> areasToProtect = Collections.emptyList();
 
+    private boolean legitMineOres = true;
+
 
     //////////////////////////////////////////////////////////////////////////////////////////
     ////////** END SETTINGS w/ COMMENTS **////////////////////////////////////////////////////
@@ -608,6 +610,10 @@ public class Settings implements IFailableConfigFile {
 
     public BlockPos getHomeBasePosition() {
         return homeBasePosition;
+    }
+
+    public boolean shouldLegitMineOres() {
+        return this.legitMineOres;
     }
 
     @Override

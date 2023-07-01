@@ -5,6 +5,7 @@ import adris.altoclef.Debug;
 import adris.altoclef.tasks.AbstractDoToClosestObjectTask;
 import adris.altoclef.tasks.ResourceTask;
 import adris.altoclef.tasks.construction.DestroyBlockTask;
+import adris.altoclef.tasks.examples.BranchMineTask;
 import adris.altoclef.tasks.movement.PickupDroppedItemTask;
 import adris.altoclef.tasks.slot.EnsureFreeInventorySlotTask;
 import adris.altoclef.tasksystem.Task;
@@ -16,13 +17,11 @@ import adris.altoclef.util.helpers.StorageHelper;
 import adris.altoclef.util.helpers.WorldHelper;
 import adris.altoclef.util.progresscheck.MovementProgressChecker;
 import adris.altoclef.util.slots.CursorSlot;
+import baritone.api.utils.RotationUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.MiningToolItem;
+import net.minecraft.item.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -68,6 +67,7 @@ public class MineAndCollectTask extends ResourceTask {
             }
         }
         return result.toArray(Block[]::new);
+
     }
 
     @Override
@@ -163,10 +163,41 @@ public class MineAndCollectTask extends ResourceTask {
         private BlockPos _miningPos;
         private AltoClef _mod;
 
+        private BranchMineTask _branchMineTask;
+
         public MineOrCollectTask(Block[] blocks, ItemTarget[] targets) {
             _blocks = blocks;
             _targets = targets;
             _pickupTask = new PickupDroppedItemTask(_targets, true);
+            _branchMineTask = new BranchMineTask(_targets);
+        }
+
+        @Override
+        protected Task getWanderTask(AltoClef mod) {
+
+            if(!mod.getModSettings().shouldLegitMineOres()) {
+                return super.getWanderTask(mod);
+            }
+
+            boolean shouldBranchMine = true;
+            for(ItemTarget target : this._targets) {
+                boolean itemShouldBranchMine = false;
+                for(Item item : target.getMatches()) {
+                    if(BranchMineTask.optimalMiningLevels.containsKey(item)) {
+                       itemShouldBranchMine = true;
+                       break;
+                    }
+                }
+                if(!itemShouldBranchMine) {
+                    shouldBranchMine = false;
+                    break;
+                }
+            }
+
+            if(shouldBranchMine) {
+                return _branchMineTask;
+            }
+            return super.getWanderTask(mod);
         }
 
         @Override
@@ -184,7 +215,8 @@ public class MineAndCollectTask extends ResourceTask {
         protected Optional<Object> getClosestTo(AltoClef mod, Vec3d pos) {
             Optional<BlockPos> closestBlock = mod.getBlockTracker().getNearestTracking(pos, check -> {
                 if (_blacklist.contains(check)) return false;
-                return WorldHelper.canBreak(mod, check);
+                BlockPos posRounded = new BlockPos((int) check.getX(), (int) check.getY(), (int) check.getZ());
+                return WorldHelper.canBreak(mod, check) && (!mod.getModSettings().shouldLegitMineOres() || RotationUtils.reachable(mod.getClientBaritone().getPlayerContext().player(), posRounded, 20.0).isPresent());
             }, _blocks);
 
             Optional<ItemEntity> closestDrop = Optional.empty();

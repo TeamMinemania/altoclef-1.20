@@ -11,6 +11,7 @@ import adris.altoclef.tasks.construction.compound.ConstructNetherPortalObsidianT
 import adris.altoclef.tasks.container.SmeltInFurnaceTask;
 import adris.altoclef.tasks.container.StoreInAnyContainerTask;
 import adris.altoclef.tasks.entity.KillEntityTask;
+import adris.altoclef.tasks.examples.BranchMineTask;
 import adris.altoclef.tasks.misc.*;
 import adris.altoclef.tasks.resources.TradeWithPiglinsTask;
 import adris.altoclef.tasks.examples.ExampleTask2;
@@ -40,10 +41,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.chunk.EmptyChunk;
 
 import java.io.*;
@@ -128,6 +129,9 @@ public class Playground {
             case "":
                 // None specified
                 Debug.logWarning("Please specify a test (ex. stacked, bed, terminate)");
+                break;
+            case "branchmine":
+                mod.runUserTask(new BranchMineTask(new ItemTarget[]{new ItemTarget(Items.DIAMOND, 5)}));
                 break;
             case "sign":
                 mod.runUserTask(new PlaceSignTask("Hello there!"));
@@ -278,8 +282,8 @@ public class Playground {
                     int total = 0;
                     File f = new File(fname);
                     FileWriter fw = new FileWriter(f);
-                    for (Identifier id : Registry.ITEM.getIds()) {
-                        Item item = Registry.ITEM.get(id);
+                    for (Identifier id : Registries.ITEM.getIds()) {
+                        Item item = Registries.ITEM.get(id);
                         if (!TaskCatalogue.isObtainable(item)) {
                             ++unobtainable;
                             fw.write(item.getTranslationKey() + "\n");

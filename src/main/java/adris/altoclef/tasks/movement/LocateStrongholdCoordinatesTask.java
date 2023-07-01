@@ -16,6 +16,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 
 import java.util.Optional;
 
@@ -149,7 +150,7 @@ public class LocateStrongholdCoordinatesTask extends Task {
                 assert MinecraftClient.getInstance().interactionManager != null;
                 if (_throwTimer.elapsed()) {
                     if (LookHelper.tryAvoidingInteractable(mod)) {
-                        MinecraftClient.getInstance().interactionManager.interactItem(mod.getPlayer(), mod.getWorld(), Hand.MAIN_HAND);
+                        MinecraftClient.getInstance().interactionManager.interactItem(mod.getPlayer(), Hand.MAIN_HAND);
                         //MinecraftClient.getInstance().options.keyUse.setPressed(true);
                         _throwTimer.reset();
                     }
@@ -177,7 +178,9 @@ public class LocateStrongholdCoordinatesTask extends Task {
         if(_strongholdEstimatePos==null){
             return Optional.empty();
         }
-        return Optional.of(new BlockPos(_strongholdEstimatePos));
+        return Optional.of(new BlockPos(new Vec3i((int) _strongholdEstimatePos.getX(),
+                (int) _strongholdEstimatePos.getY(),
+                (int) _strongholdEstimatePos.getZ())));
     }
 
     @Override

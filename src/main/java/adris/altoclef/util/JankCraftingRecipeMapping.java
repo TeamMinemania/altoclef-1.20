@@ -7,6 +7,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeManager;
 
+import javax.sound.midi.SysexMessage;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,10 +18,17 @@ public class JankCraftingRecipeMapping {
     private static final HashMap<Item, List<Recipe>> _recipeMapping = new HashMap<>();
 
     private static void reloadRecipeMapping() {
+
         if (MinecraftClient.getInstance().getNetworkHandler() != null) {
             RecipeManager recipes = MinecraftClient.getInstance().getNetworkHandler().getRecipeManager();
             for (Recipe recipe : recipes.values()) {
-                Item output = recipe.getOutput().getItem();
+
+                if(MinecraftClient.getInstance().world.getRegistryManager() == null) {
+                    System.out.println("YO THE THE REGISTRY MANAGER IS NULL");
+                    break;
+                }
+
+                Item output = recipe.getOutput(MinecraftClient.getInstance().world.getRegistryManager()).getItem();
                 if (!_recipeMapping.containsKey(output)) {
                     _recipeMapping.put(output, new ArrayList<>());
                 }

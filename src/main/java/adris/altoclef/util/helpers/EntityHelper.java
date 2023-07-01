@@ -16,6 +16,7 @@ import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.tag.DamageTypeTags;
 
 /**
  * Helper functions to interpret entity state
@@ -52,7 +53,7 @@ public class EntityHelper {
 
     public static boolean isTradingPiglin(Entity entity) {
         if (entity instanceof PiglinEntity pig) {
-            for (ItemStack stack : pig.getItemsHand()) {
+            for (ItemStack stack : pig.getHandItems()) {
                 if (stack.getItem().equals(Items.GOLD_INGOT)) {
                     // We're trading with this one, ignore it.
                     return true;
@@ -73,22 +74,24 @@ public class EntityHelper {
             return 0;
 
         // Armor Base
-        if (!source.bypassesArmor()) {
+        if (!source.isIn(DamageTypeTags.BYPASSES_ARMOR)) {
             damageAmount = DamageUtil.getDamageLeft((float) damageAmount, (float) player.getArmor(), (float) player.getAttributeValue(EntityAttributes.GENERIC_ARMOR_TOUGHNESS));
         }
 
+        int k;
         // Enchantments & Potions
-        if (!source.isUnblockable()) {
-            int k;
-            if (player.hasStatusEffect(StatusEffects.RESISTANCE) && source != DamageSource.OUT_OF_WORLD) {
+        if (!source.isIn(DamageTypeTags.BYPASSES_RESISTANCE)) {
+            if (player.hasStatusEffect(StatusEffects.RESISTANCE) && source != player.getWorld().getDamageSources().outOfWorld()) {
                 //noinspection ConstantConditions
                 k = (player.getStatusEffect(StatusEffects.RESISTANCE).getAmplifier() + 1) * 5;
                 int j = 25 - k;
-                double f = damageAmount * (double)j;
+                double f = damageAmount * (double) j;
                 double g = damageAmount;
                 damageAmount = Math.max(f / 25.0F, 0.0F);
             }
+        }
 
+        if(!source.isIn(DamageTypeTags.BYPASSES_ENCHANTMENTS)) {
             if (damageAmount <= 0.0) {
                 damageAmount = 0.0;
             } else {

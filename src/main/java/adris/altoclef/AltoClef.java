@@ -28,6 +28,7 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.Item;
@@ -153,7 +154,9 @@ public class AltoClef implements ModInitializer {
         // Receive + cancel chat
         EventBus.subscribe(SendChatEvent.class, evt -> {
             String line = evt.message;
+            System.out.println("Chat sent");
             if (getCommandExecutor().isClientCommand(line)) {
+                System.out.println("Cancelling event");
                 evt.cancel();
                 getCommandExecutor().execute(line);
             }
@@ -165,7 +168,7 @@ public class AltoClef implements ModInitializer {
         // Tick with the client
         EventBus.subscribe(ClientTickEvent.class, evt -> onClientTick());
         // Render
-        EventBus.subscribe(ClientRenderEvent.class, evt -> onClientRenderOverlay(evt.stack));
+        EventBus.subscribe(ClientRenderEvent.class, evt -> onClientRenderOverlay(evt.stack, evt.vertexConsumerProvider));
 
         // Playground
         Playground.IDLE_TEST_INIT_FUNCTION(this);
@@ -204,8 +207,8 @@ public class AltoClef implements ModInitializer {
         _inputControls.onTickPost();
     }
 
-    private void onClientRenderOverlay(MatrixStack matrixStack) {
-        _commandStatusOverlay.render(this, matrixStack);
+    private void onClientRenderOverlay(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider) {
+        _commandStatusOverlay.render(this, matrixStack, vertexConsumerProvider);
     }
 
     /// GETTERS AND SETTERS

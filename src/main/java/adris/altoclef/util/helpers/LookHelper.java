@@ -108,7 +108,7 @@ public interface LookHelper {
         if (delta.lengthSquared() > maxRange * maxRange) {
             end = start.add(delta.normalize().multiply(maxRange));
         }
-        return entity.world.raycast(new RaycastContext(start, end, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, entity));
+        return entity.getWorld().raycast(new RaycastContext(start, end, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, entity));
     }
 
     static BlockHitResult raycast(Entity entity, Vec3d end, double maxRange) {
@@ -175,7 +175,12 @@ public interface LookHelper {
         HitResult result = MinecraftClient.getInstance().crosshairTarget;
         if (result == null) return false;
         if (result.getType() == HitResult.Type.BLOCK) {
-            return WorldHelper.isInteractableBlock(mod, new BlockPos(result.getPos()));
+            Vec3d resultGetPos = result.getPos();
+            return WorldHelper.isInteractableBlock(mod, new BlockPos(
+                    (int) resultGetPos.x,
+                    (int) resultGetPos.y,
+                    (int) resultGetPos.z
+            ));
         } else if (result.getType() == HitResult.Type.ENTITY) {
             if (result instanceof EntityHitResult) {
                 Entity entity = ((EntityHitResult) result).getEntity();
