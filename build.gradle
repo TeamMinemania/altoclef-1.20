@@ -43,14 +43,15 @@ dependencies {
     shadow('com.fasterxml.jackson.core:jackson-annotations:2.10.1')
     shadow('com.fasterxml.jackson.core:jackson-databind:2.10.1')
 
-    // Thank you georgeagostino for fixing my garbage
-    if (getProject().hasProperty("altoclef.development")) {
-        // Must run build from baritone-plus once
-        modImplementation 'baritone-api-fabric:baritone-unoptimized-fabric:1.20.1'
-    } else {
-        modImplementation "cabaletta:baritone-unoptimized-fabric:1.20.1"
-        include "cabaletta:baritone-unoptimized-fabric:1.20.1"
-    }
+// Thank you georgeagostino for fixing my garbage
+if (getProject().hasProperty("altoclef.development")) {
+    // Must run build from baritone-plus once
+    modImplementation files('https://github.com/cabaletta/baritone/releases/download/v1.10.1/baritone-unoptimized-fabric-1.10.1.jar')
+} else {
+    modImplementation files('https://github.com/cabaletta/baritone/releases/download/v1.10.1/baritone-unoptimized-fabric-1.10.1.jar')
+    include 'https://github.com/cabaletta/baritone/releases/download/v1.10.1/baritone-unoptimized-fabric-1.10.1.jar'
+}
+
     //modImplementation 'baritone-api-fabric:baritone-api-fabric:1.6.3'
     //implementation files('baritone-plus/build/libs/baritone-unoptimized-fabric-1.6.3.jar')
 }
